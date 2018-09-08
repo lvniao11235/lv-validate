@@ -1,0 +1,53 @@
+<!DOCTYPE>
+<html>
+<head>
+	<title>validate demo</title>
+	<style>
+		span.error{
+			display:none;
+			color:red;
+		}
+	</style>
+</head>
+<body>
+<div id="controls">
+	<!---->
+	<p>require: <input type="text" class="validate required" name="text"/><span class="error">*</span></p>
+	<p>require: <textarea class="validate required" name="textarea"></textarea><span class="error">*</span></p>
+	<p>require: <input type="radio" class="validate required" name="radio" value="true"/>true<input type="radio" class="validate required" name="radio" value="false"/>false<span class="error">*</span></p>
+	<p>require: <input type="checkbox" class="validate required" name="checkbox" value="true"/>true<input type="checkbox" class="validate required" name="checkbox" value="false"/>false<span class="error">*</span></p>
+	<p>require: <select class="validate required" name="select"><option style='display: none'></option><option value="1">1</option><option value="2">2</option></select><span class="error">*</span></p>
+	<!---->
+	<p>min length: <input type="text" class="validate minLength" min_length="5" name="min_length"/><span class="error">*</span></p>
+	<p>max length: <input type="text" class="validate maxLength" max_length="10" name="max_length"/><span class="error">*</span></p>
+	<p>numberic: <input type="text" class="validate integer" name="numberic_text"/><span class="error">*</span></p>
+	<p>decimal: <input type="text" class="validate decimal" name="decimal_text"/><span class="error">*</span></p>
+	<p>email: <input type="text" class="validate email" name="email_text"/><span class="error">*</span></p>
+	<p>ip: <input type="text" class="validate ip" name="ip_text"/><span class="error">*</span></p>
+	<p>url: <input type="text" class="validate required url" name="url_text"/><span class="error">*</span></p>
+	<p>pattern: <input type="text" class="validate pattern" pattern="/^[+-]?[0-9]+$/" name="pattern_text"/><span class="error">*</span></p>
+	<!---->
+	<button id="btn">ok</button>
+</div>
+<script src="jquery-3.3.1.js"></script>
+<script src="lv-validate.js"></script>
+<script>
+	$(function(){
+		var validate = new Validate("controls");
+		$("#btn").click(function(){
+			$("#controls .error").css("display", "none");
+			if(!validate.validate()){
+				for(var i=0; i<validate.errorControls.length; i++){
+					$("#controls input[name='" + validate.errorControls[i] + "']").siblings(".error").css("display", "inline-block");
+					$("#controls select[name='" + validate.errorControls[i] + "']").siblings(".error").css("display", "inline-block");
+					$("#controls textarea[name='" + validate.errorControls[i] + "']").siblings(".error").css("display", "inline-block");
+				}
+				alert(validate.toMsg());
+			} else {
+				alert("success");
+			}
+		});
+	});
+</script>
+</body>
+</html>
