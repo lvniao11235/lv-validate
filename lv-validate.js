@@ -19,7 +19,8 @@ Validate.prototype = {
 		"email",
 		"ip",
 		"url",
-		"pattern"
+		"pattern",
+		"equalto"
     ],
     rulesCallback: {
         messages: {
@@ -31,7 +32,8 @@ Validate.prototype = {
 			email: 'The %s field must contain a valid email address.',
 			ip: 'The %s field must contain a valid IP.',
 			url: 'The %s field must contain a valid URL.',
-			pattern: 'The %s field must match %p'
+			pattern: 'The %s field must match %p',
+			equalto: 'The %s1 filed must equal to %s2'
         },
 		regexs: {
 			integer: /^[+-]?[0-9]+$/,
@@ -97,6 +99,16 @@ Validate.prototype = {
 				return "";
 			}
 			return this.messages[field].replace("%s", control.name);
+		},
+		equalto(control, validate){
+			var value1 = Object(control.value).toString();
+			var equaltoed = $(control).attr("equalto");
+			var control2 = $("#" + validate.id + " input[name='" + equaltoed + "']");
+			var value2 = control2.val();
+			if(value1 === value2){
+				return "";
+			}
+			return this.messages.equalto.replace("%s1", control.name).replace("%s2", control2.attr("name"));
 		}
     },
     validate: function () {
@@ -108,7 +120,7 @@ Validate.prototype = {
 				var classes = controls[i].className.split(" ");
 				for(var j=0; j<classes.length; j++){
 					if(this.rules.indexOf(classes[j]) >= 0){
-						var error = this.rulesCallback[classes[j]](controls[i]);
+						var error = this.rulesCallback[classes[j]](controls[i], this);
                         if (error.length > 0) {
 							if(this.errorControls.indexOf(controls[i].name) == -1){
 								this.errors.push(error);
